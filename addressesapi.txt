@@ -31,6 +31,6 @@ icook.hk#icook.hk
 wto.org#wto.org
 time.is#time.is
 cf.877774.xyz#随机优选
-ct.877774.xyz#随机优选
+ct.877774.xyz#电信优选
 cf.090227.xyz#随机优选
-ct.090227.xyz#随机优选
+ct.090227.xyz#电信优选
