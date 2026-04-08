@@ -24,6 +24,7 @@
 141.94.79.161:2053#FR
 70.34.244.250:27000#PL
 84.235.245.18:34501#AE
+8.223.63.150:443#HK
 148.113.43.228:2053#inida
 www.shopify.com#www.shopify.com
 www.visa.com.hk#www.visa.com.hk
@@ -42,7 +43,22 @@ cloudflare.cfgo.cc#cloudflare.cfgo.cc
 b3.cfyx.20237737.xyz#b3.cfyx.20237737.xyz
 cloudflare.byoip.top#cloudflare.byoip.top
 yongboss.cloudflare.byoip.top#yongboss.cloudflare.byoip.top
-
+cfip.1323123.xyz
+mfa.gov.ua
+sub.danfeng.eu.org
+img.yust.eu.org
+cf-cname.xingpingcn.top
+cf.zhetengsha.eu.org
+cdns.doon.eu.org
+bestcf.030101.xyz
+cfip.1323123.xyz
+cdn.2020111.xyz
+cf.0sm.com
+777.ai7777777.xyz
+cloudflare-ip.mofashi.ltd
+cloudflare-dl.byoip.top
+dash.cloudflare.com
+freeyx.cloudflare88.eu.org
 
 
 
