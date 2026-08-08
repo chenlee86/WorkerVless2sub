@@ -5,6 +5,8 @@ wto.org#wto.org
 time.is#time.is
 ct.877774.xyz#电信优选
 ct.090227.xyz#电信优选
+123.cf.090227.xyz
+cf.877771.xyz#移动优选
 cmcc.877774.xyz#移动优选
 cmcc.877774.xyz#移动优选
 store.ubi.com#store.ubi.com
