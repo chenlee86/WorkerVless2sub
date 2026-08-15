@@ -46,6 +46,15 @@ let 网络备案 = `<a href='https://t.me/CMLiussss'>萌ICP备-20240707号</a>`;
 let 额外ID = '0';
 let 加密方式 = 'auto';
 let 网站图标, 网站头像, 网站背景, xhttp = '';
+// 地区优选IP接口：通过 cfip 参数选择对应地区的优选IP（可多选，逗号分隔，如 cfip=hk,sg）
+let 地区优选IP接口 = {
+	mini: 'https://bestcf.pages.dev/tiancheng/mini.txt',	// 精选 Mini（多地区混合）
+	hk: 'https://bestcf.pages.dev/tiancheng/hk.txt',	// 中国香港 HK
+	sg: 'https://bestcf.pages.dev/tiancheng/sg.txt',	// 新加坡 SG
+	jp: 'https://bestcf.pages.dev/tiancheng/jp.txt',	// 日本 JP
+	kr: 'https://bestcf.pages.dev/tiancheng/kr.txt',	// 韩国 KR
+	us: 'https://bestcf.pages.dev/tiancheng/us.txt',	// 美国 US
+};
 async function 整理优选列表(api) {
 	if (!api || api.length === 0) return [];
 
@@ -764,6 +773,45 @@ async function subHtml(request) {
 					.info-tooltip::before {
 						display: none;
 					}
+
+					.region-options {
+						display: flex;
+						flex-wrap: wrap;
+						gap: 10px;
+					}
+
+					.region-item {
+						display: flex;
+						align-items: center;
+						gap: 6px;
+						margin: 0;
+						padding: 8px 14px;
+						border: 2px solid rgba(0, 0, 0, 0.15);
+						border-radius: 10px;
+						font-weight: 500;
+						color: #555;
+						cursor: pointer;
+						user-select: none;
+						transition: all 0.3s ease;
+						background: rgba(255, 255, 255, 0.5);
+					}
+
+					.region-item:hover {
+						border-color: var(--primary-color);
+					}
+
+					.region-item input {
+						width: auto;
+						margin: 0;
+						accent-color: var(--primary-color);
+						cursor: pointer;
+					}
+
+					.region-item:has(input:checked) {
+						border-color: var(--primary-color);
+						background: rgba(67, 97, 238, 0.12);
+						color: var(--primary-color);
+					}
 				</style>
 				<script src="https://cdn.jsdelivr.net/npm/@keeex/qrcodejs-kx@1.0.2/qrcode.min.js"></script>
 			</head>
@@ -784,7 +832,19 @@ async function subHtml(request) {
 						<label for="link">节点链接</label>
 						<input type="text" id="link" placeholder="请输入 VMess / VLESS / Trojan 链接">
 					</div>
-					
+
+					<div class="input-group">
+						<label>优选地区（可多选，不选则使用默认优选）</label>
+						<div class="region-options">
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="mini" onchange="onRegionChange()"> 精选 Mini</label>
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="hk" onchange="onRegionChange()"> 香港 HK</label>
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="sg" onchange="onRegionChange()"> 新加坡 SG</label>
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="jp" onchange="onRegionChange()"> 日本 JP</label>
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="kr" onchange="onRegionChange()"> 韩国 KR</label>
+							<label class="region-item"><input type="checkbox" class="region-checkbox" value="us" onchange="onRegionChange()"> 美国 US</label>
+						</div>
+					</div>
+
 					<button onclick="generateLink()">生成优选订阅</button>
 					
 					<div class="input-group">
@@ -853,13 +913,27 @@ async function subHtml(request) {
 						});
 					}
 	
+					// 收集勾选的优选地区，拼接成 &cfip=hk,sg 形式
+					function getRegionParam() {
+						const regions = Array.from(document.querySelectorAll('.region-checkbox:checked')).map(cb => cb.value);
+						return regions.length > 0 ? '&cfip=' + regions.join(',') : '';
+					}
+
+					// 勾选地区变化时，若已生成过链接则自动刷新
+					function onRegionChange() {
+						if (document.getElementById('link').value && document.getElementById('result').value) {
+							generateLink();
+						}
+					}
+
 					function generateLink() {
 						const link = document.getElementById('link').value;
 						if (!link) {
 							alert('请输入节点链接');
 							return;
 						}
-						
+
+						const cfipParam = getRegionParam();
 						let uuidType = 'uuid';
 						const 是特洛伊 = link.startsWith(atob(atob('ZEhKdmFtRnVPaTh2')));
 						if (是特洛伊) uuidType = 'password';
@@ -880,13 +954,13 @@ async function subHtml(request) {
 								const security = vmessJson.scy || 'auto';
 								const domain = window.location.hostname;
 								
-								subLink = \`https://\${domain}/sub?host=\${host}&uuid=\${uuid}&path=\${encodeURIComponent(path)}&sni=\${sni}&type=\${type}&alpn=\${encodeURIComponent(alpn)}&alterid=\${alterId}&security=\${security}\`;
+								subLink = \`https://\${domain}/sub?host=\${host}&uuid=\${uuid}&path=\${encodeURIComponent(path)}&sni=\${sni}&type=\${type}&alpn=\${encodeURIComponent(alpn)}&alterid=\${alterId}&security=\${security}\` + cfipParam;
 							} else {
 								const uuid = link.split("//")[1].split("@")[0];
 								const search = link.split("?")[1].split("#")[0];
 								const domain = window.location.hostname;
 								
-								subLink = \`https://\${domain}/sub?\${uuidType}=\${uuid}&\${search}\`;
+								subLink = \`https://\${domain}/sub?\${uuidType}=\${uuid}&\${search}\` + cfipParam;
 							}
 							document.getElementById('result').value = subLink;
 	
@@ -986,6 +1060,31 @@ export default {
 		if (env.ADDCSV) addressescsv = await 整理(env.ADDCSV);
 		DLS = Number(env.DLS) || DLS;
 		remarkIndex = Number(env.CSVREMARK) || remarkIndex;
+
+		// 允许通过环境变量 CFIP 自定义/覆盖地区优选IP接口（格式：地区代码=接口地址，多个用换行或逗号分隔）
+		if (env.CFIP) {
+			const 自定义接口 = await 整理(env.CFIP);
+			for (const 条目 of 自定义接口) {
+				const [代码, ...余下] = 条目.split('=');
+				const 地址 = 余下.join('=').trim();
+				if (代码 && 地址) 地区优选IP接口[代码.trim().toLowerCase()] = 地址;
+			}
+		}
+
+		// 地区优选IP：根据 cfip 参数选择对应地区的优选IP接口（可多选，逗号分隔，如 cfip=hk,sg）
+		const 地区参数 = url.searchParams.get('cfip');
+		if (地区参数) {
+			const 地区接口列表 = 地区参数.toLowerCase().split(',')
+				.map(s => s.trim())
+				.filter(s => 地区优选IP接口[s])
+				.map(s => 地区优选IP接口[s]);
+			if (地区接口列表.length > 0) {
+				// 选择了地区后，仅使用对应地区的优选IP
+				addresses = [];
+				addressesapi = 地区接口列表;
+				addressescsv = [];
+			}
+		}
 
 		if (socks5DataURL) {
 			try {
